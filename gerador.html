@@ -641,6 +641,546 @@
     };
     let pendingClicks = JSON.parse(localStorage.getItem(prefKey('pendingClicks'))) || {};
     let validatedClicks = JSON.parse(localStorage.getItem(prefKey('validatedClicks'))) || {};
+         background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      padding: 1rem;
+      text-align: center;
+      width: 100%;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .header h1 {
+      font-family: 'Jura', sans-serif;
+      font-size: 1.8rem;
+      color: var(--text-primary);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .theme-button {
+      padding: 0.5rem 1rem;
+      background: var(--tutorial-bg);
+      border: none;
+      color: white;
+      font-size: 0.875rem;
+      font-weight: 600;
+      border-radius: 0.375rem;
+      cursor: pointer;
+      transition: background 0.3s ease, transform 0.2s ease;
+    }
+    .theme-button:hover {
+      background: var(--tutorial-hover);
+      transform: scale(1.05);
+    }
+    .status-bar {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      padding: 1rem;
+      background: var(--surface);
+      box-shadow: var(--shadow);
+      gap: 0.5rem;
+      text-align: center;
+      font-size: 0.875rem;
+      font-weight: 600;
+      width: 100%;
+      max-width: 1200px;
+      border-radius: 0.375rem;
+      margin: 1rem 0;
+    }
+    .status-bar div {
+      padding: 0.75rem;
+      background: var(--background);
+      border-radius: 0.375rem;
+      transition: background 0.3s ease, transform 0.2s ease;
+    }
+    .status-bar div:hover {
+      background: var(--secondary);
+      color: white;
+      transform: translateY(-3px);
+    }
+    .status-bar span.golds-balance,
+    .status-bar span#golds-total {
+      color: var(--gold);
+      font-size: 1.125rem;
+      font-weight: bold;
+    }
+    .status-bar span.reais-balance {
+      color: var(--reais);
+      font-size: 1.125rem;
+      font-weight: bold;
+    }
+    .wallet-section {
+      width: 100%;
+      max-width: 1200px;
+      padding: 1.5rem 1rem;
+      background: var(--surface);
+      border-radius: 0.375rem;
+      box-shadow: var(--shadow);
+      margin: 1rem 0;
+    }
+    .wallet-section h2 {
+      font-family: 'Jura', sans-serif;
+      font-size: 1.5rem;
+      margin-bottom: 0.75rem;
+      color: var(--text-primary);
+    }
+    .balances-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+    .balance-card {
+      background: var(--background);
+      border-radius: 0.375rem;
+      padding: 1.5rem;
+      text-align: center;
+      box-shadow: var(--shadow);
+    }
+    .balance-card.golds {
+      border-left: 4px solid var(--gold);
+    }
+    .balance-card.reais {
+      border-left: 4px solid var(--reais);
+    }
+    .balance-card h3 {
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+      margin-bottom: 0.5rem;
+    }
+    .balance-card .balance-amount {
+      font-size: 2rem;
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+    }
+    .balance-card .balance-amount.golds {
+      color: var(--gold);
+    }
+    .balance-card .balance-amount.reais {
+      color: var(--reais);
+    }
+    .balance-card .user-info {
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+    }
+    .ads-section {
+      width: 100%;
+      max-width: 1200px;
+      padding: 1.5rem 1rem;
+      background: var(--surface);
+      border-radius: 0.375rem;
+      box-shadow: var(--shadow);
+      margin: 1.5rem 0;
+      animation: fadeIn 0.5s ease forwards;
+    }
+    .ads-section h2 {
+      font-family: 'Jura', sans-serif;
+      font-size: 1.5rem;
+      margin-bottom: 0.75rem;
+      color: var(--text-primary);
+    }
+    .carousel-container {
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      display: flex;
+      gap: 1rem;
+      padding: 0 1rem 1rem;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+      justify-content: center;
+    }
+    .carousel-container::-webkit-scrollbar {
+      display: none;
+    }
+    .carousel-container .ad-card {
+      flex: 0 0 90%;
+      max-width: 400px;
+      scroll-snap-align: center;
+      position: relative;
+      min-height: 400px;
+    }
+    .ad-card {
+      background: var(--background);
+      border-radius: 0.375rem;
+      padding: 1.25rem;
+      box-shadow: var(--shadow);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      border: 1px solid var(--border);
+      position: relative;
+    }
+    .ad-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    }
+    .ad-card h3 {
+      font-family: 'Jura', sans-serif;
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 0.75rem;
+      color: var(--text-primary);
+    }
+    .ad-card p {
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+      margin-bottom: 0.5rem;
+    }
+    .ad-card .golds-reward {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--gold);
+      margin: 0.5rem 0;
+    }
+    .ad-card .steps-list {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      margin-bottom: 0.5rem;
+    }
+    .ad-card .steps-list ul {
+      list-style-type: disc;
+      padding-left: 1.25rem;
+    }
+    .ad-card .view-button {
+      position: absolute;
+      bottom: 1rem;
+      left: 1rem;
+      padding: 0.75rem;
+      background: var(--secondary);
+      color: white;
+      border: none;
+      border-radius: 0.375rem;
+      font-size: 0.875rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.3s ease, transform 0.2s ease;
+    }
+    .ad-card .view-button:hover {
+      background: var(--secondary-hover);
+      transform: scale(1.05);
+    }
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+    .modal-content {
+      background: var(--surface);
+      padding: 1.5rem;
+      border-radius: 0.375rem;
+      text-align: center;
+      animation: slideIn 0.5s ease forwards;
+      max-width: 90%;
+      width: 500px;
+      box-shadow: var(--shadow);
+    }
+    .modal-content h2 {
+      font-family: 'Jura', sans-serif;
+      color: var(--text-primary);
+      margin-bottom: 0.5rem;
+      font-size: 1.25rem;
+    }
+    .modal-content p {
+      color: var(--text-secondary);
+      margin-bottom: 1rem;
+      font-size: 0.875rem;
+    }
+    .modal-content button {
+      padding: 0.5rem 1rem;
+      background: var(--secondary);
+      border: none;
+      color: white;
+      border-radius: 0.375rem;
+      cursor: pointer;
+      font-weight: 600;
+      margin: 0.25rem;
+      font-size: 0.875rem;
+    }
+    .modal-content button.cancel {
+      background: var(--accent);
+    }
+    .modal-content button.cancel:hover {
+      background: var(--nsfw-hover);
+      transform: scale(1.05);
+    }
+    .modal-content button:hover {
+      background: var(--secondary-hover);
+      transform: scale(1.05);
+    }
+    .cookie-banner {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background: var(--surface);
+      color: var(--text-primary);
+      padding: 1rem;
+      box-shadow: var(--shadow);
+      border-top: 1px solid var(--border);
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      align-items: center;
+      text-align: center;
+    }
+    [data-theme="dark"] .cookie-banner {
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+    }
+    .cookie-banner .content {
+      font-size: 0.875rem;
+    }
+    .cookie-banner .buttons {
+      display: flex;
+      gap: 0.5rem;
+    }
+    .cookie-banner button {
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: 0.375rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.3s ease;
+      font-size: 0.875rem;
+    }
+    .cookie-banner button.accept {
+      background: var(--secondary);
+      color: white;
+    }
+    .cookie-banner button.accept:hover {
+      background: var(--secondary-hover);
+    }
+    .cookie-banner button.decline {
+      background: transparent;
+      color: var(--text-primary);
+      border: 1px solid var(--border);
+    }
+    .cookie-banner button.decline:hover {
+      background: var(--accent);
+      color: white;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes slideIn {
+      from { opacity: 0; transform: scale(0.8); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    @media (max-width: 600px) {
+      .header {
+        padding: 0.75rem;
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+      .header h1 {
+        font-size: 1.25rem;
+      }
+      .theme-button {
+        width: 100%;
+        max-width: none;
+      }
+      .status-bar {
+        font-size: 0.75rem;
+        padding: 0.5rem;
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      }
+      .status-bar div {
+        padding: 0.5rem;
+      }
+      .wallet-section,
+      .ads-section {
+        padding: 1rem 0.5rem;
+      }
+      .wallet-section h2,
+      .ads-section h2 {
+        font-size: 1.25rem;
+      }
+      .balances-grid {
+        grid-template-columns: 1fr;
+      }
+      .carousel-container {
+        padding: 0 0.5rem 1rem;
+      }
+      .carousel-container .ad-card {
+        flex: 0 0 95%;
+        max-width: 350px;
+      }
+      .modal-content {
+        padding: 1rem;
+        width: 90%;
+      }
+      .cookie-banner .buttons {
+        flex-direction: column;
+        width: 100%;
+      }
+      .cookie-banner button {
+        width: 100%;
+      }
+    }
+    @media (min-width: 601px) and (max-width: 1024px) {
+      .header h1 {
+        font-size: 1.5rem;
+      }
+      .wallet-section,
+      .ads-section {
+        padding: 1rem;
+      }
+      .wallet-section h2,
+      .ads-section h2 {
+        font-size: 1.4rem;
+      }
+    }
+  </style>
+</head>
+<body data-theme="light">
+  <header class="header" role="banner">
+    <h1>YshippCommerce</h1>
+    <div>
+      <button class="theme-button" id="theme-toggle">Alternar Tema</button>
+    </div>
+  </header>
+  <main class="flex-grow w-full">
+    <div class="status-bar" role="region" aria-label="Resumo de Saldo">
+      <div>SALDO EM GOLDS <span class="golds-balance" id="golds-balance"></span></div>
+      <div>SALDO EM REAIS <span class="reais-balance" id="reais-balance">R$ 0</span></div>
+      <div>GOLDS TOTAIS <span id="golds-total"></span></div>
+    </div>
+    <section class="ads-section">
+      <h2>Gerador de Golds Via Links Curtos</h2>
+      <p style="margin-bottom: 1rem; color: var(--text-secondary);">Acesse links curtos e ganhe 150 Golds por visualização.</p>
+      <div class="carousel-container" id="links-carousel"></div>
+    </section>
+    <section class="ads-section">
+      <h2>Gerador de Golds Via Cripto</h2>
+      <p style="margin-bottom: 1rem; color: var(--text-secondary);">Realize tarefas de criptomoedas e ganhe Golds inserindo o código fornecido.</p>
+      <div class="carousel-container" id="crypto-carousel"></div>
+    </section>
+    <section class="wallet-section">
+      <h2>Gerencie Sua Carteira</h2>
+      <div class="balances-grid">
+        <div class="balance-card golds">
+          <h3>Saldo em Golds</h3>
+          <div class="balance-amount golds" id="golds-balance-display">682,500</div>
+          <p>Ganhe Golds visualizando propagandas.</p>
+          <div class="user-info" id="user-info">Usuário: Ana Silva (ID: #mgdqyh5l0BQZ2)</div>
+        </div>
+        <div class="balance-card reais">
+          <h3>Saldo em Reais</h3>
+          <div class="balance-amount reais" id="reais-balance-display">R$ 1,00</div>
+          <p>Converta Golds para reais e solicite saques.</p>
+        </div>
+      </div>
+    </section>
+    <div id="welcomeModal" class="modal" role="dialog" aria-labelledby="welcomeMessage">
+      <div class="modal-content">
+        <h2 id="welcomeMessage">Aviso</h2>
+        <p></p>
+        <button class="secondary-button" onclick="confirmGolds()">OK</button>
+      </div>
+    </div>
+    <div id="cryptoModal" class="modal" role="dialog" aria-labelledby="cryptoMessage">
+      <div class="modal-content">
+        <h2 id="cryptoMessage">Insira o Código</h2>
+        <p>Insira o código fornecido para reivindicar seus Golds.</p>
+        <input type="text" id="cryptoCode" placeholder="Digite o código">
+        <button onclick="submitCryptoCode()">Confirmar</button>
+        <button class="cancel" onclick="closeModal('cryptoModal')">Cancelar</button>
+      </div>
+    </div>
+    <div id="cookieBanner" class="cookie-banner">
+      <div class="content">
+        <p>Concordo que meu endereço IP seja coletado e enviado ao administrador para identificar atividades.</p>
+      </div>
+      <div class="buttons">
+        <button class="accept" onclick="acceptIPConsent()">Aceitar</button>
+        <button class="decline" onclick="declineIPConsent()">Recusar</button>
+      </div>
+    </div>
+  </main>
+  <footer class="footer py-4 mt-auto w-full">
+    <div class="container text-center">
+      <p class="text-sm">© 2025 YshippCommerce. Todos os direitos reservados. Desenvolvido por xAI.</p>
+      <div class="flex justify-center space-x-4 mt-2">
+        <a href="#" class="text-primary text-sm hover:underline">WhatsApp</a>
+        <a href="#" class="text-primary text-sm hover:underline">Facebook</a>
+      </div>
+    </div>
+  </footer>
+  <script>
+    // === HELPER UNIVERSAL DE USUÁRIO ===
+    function getCurrentUserId() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const urlId = urlParams.get('userId');
+      const stored = localStorage.getItem('currentUserId') || localStorage.getItem('activeUserId');
+      let profile = {};
+      try { profile = JSON.parse(localStorage.getItem('userProfile') || '{}'); } catch(e) { profile = {}; }
+      return urlId || stored || profile.id || 'defaultUser';
+    }
+
+    function prefKey(key) {
+      const id = getCurrentUserId() || 'defaultUser';
+      return `${id}_${key}`;
+    }
+
+    var gk_isXlsx = false;
+    var gk_xlsxFileLookup = {};
+    var gk_fileData = {};
+    function filledCell(cell) {
+      return cell !== '' && cell != null;
+    }
+    function loadFileData(filename) {
+      if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+        try {
+          var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+          var firstSheetName = workbook.SheetNames[0];
+          var worksheet = workbook.Sheets[firstSheetName];
+          var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+          var filteredData = jsonData.filter(row => row.some(filledCell));
+          var headerRowIndex = filteredData.findIndex((row, index) =>
+            row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+          );
+          if (headerRowIndex === -1 || headerRowIndex > 25) {
+            headerRowIndex = 0;
+          }
+          var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex));
+          csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+          return csv;
+        } catch (e) {
+          console.error(e);
+          return "";
+        }
+      }
+      return gk_fileData[filename] || "";
+    }
+
+    const APP_VERSION = "1.5.3"; // Incrementado para refletir mudanças
+    const ADMIN_PHONE = "+5535984072446";
+    let currentUserId = getCurrentUserId();
+    let goldsBalance = 682500;
+    let reaisBalance = 1.00;
+    let goldsTotal = 682500;
+    let transactions = [];
+    let adProgress = {
+      1: { current: 0, max: 1, golds: 150 }, // EncurtaNet
+      2: { current: 0, max: 5, golds: 150 }, // Shortano
+      3: { current: 0, max: 5, golds: 150 }, // Shortino
+      4: { current: 0, max: 2, golds: 150 }, // Clicksfly
+      5: { current: 0, max: 24, golds: 150 }, // EarnNow
+      6: { current: 0, max: 1, golds: 500 } // FireFaucet
+    };
+    let pendingClicks = JSON.parse(localStorage.getItem(prefKey('pendingClicks'))) || {};
+    let validatedClicks = JSON.parse(localStorage.getItem(prefKey('validatedClicks'))) || {};
     let currentAdId = null;
     let currentGolds = null;
     let currentClickId = null;
