@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Perfis de Membros - YshippCommerce">
+  <title>Perfis de Membros - YshippCommerce</title>
+  <link href="https://fonts.googleapis.com/css2?family=Jura:wght@400;700&family=Ubuntu:wght@400;500;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    :root {
+      --background: #f9fafb;
+      --surface: #ffffff;
+      --text-primary: #1f2937;
+      --text-secondary: #6b7280;
+      --primary: #7c3aed;
+      --primary-hover: #6d28d9;
+      --secondary: #10b981;
+      --secondary-hover: #059669;
+      --border: #e5e7eb;
+      --shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      --accent: #ff6b6b;
+      --gold: #e67e22;
+    }
+
+    [data-theme="dark"] {
+      --background: #1f2937;
+      --surface: #374151;
+      --text-primary: #f3f4f6;
+      --text-secondary: #9ca3af;
+      --border: #4b5563;
+      --shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+      --accent: #ff8787;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Ubuntu', sans-serif;
+      background: var(--background);
+      color: var(--text-primary);
+      line-height: 1.6;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      overflow-x: hidden;
+    }
+
+    .header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      padding: 1rem;
+      width: 100%;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .header h1 {
+      font-family: 'Jura', sans-serif;
+      font-size: 1.8rem;
+      color: var(--text-primary);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .back-button {
+      padding: 0.5rem 1rem;
+      background: var(--secondary);
+      color: white;
+      border: none;
+      border-radius: 0.375rem;
+      font-size: 0.875rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.3s ease, transform 0.2s ease;
+    }
+
+    .back-button:hover {
+      background: var(--secondary-hover);
+      transform: scale(1.05);
+    }
+
+    .search-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      max-width: 600px;
+      margin: 1.5rem auto;
+    }
+
+    .search-container input {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid var(--border);
+      border-radius: 0.375rem;
+      font-size: 0.875rem;
+      background: var(--surface);
+      color: var(--text-primary);
+    }
+
+    .members-section {
+      width: 100%;
+      max-width: 1200px;
+      padding: 1.5rem 1rem;
+      background: var(--surface);
+      border-radius: 0.375rem;
+      box-shadow: var(--shadow);
+      margin: 1.5rem 0;
+    }
+
+    .members-section h2 {
+      font-family: 'Jura', sans-serif;
+      font-size: 1.5rem;
+      margin-bottom: 0.75rem;
+      color: var(--text-primary);
+    }
+
+    .members-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      margin-top: 1rem;
+    }
+
+    .member-card {
+      background: var(--background);
+      border-radius: 0.375rem;
+      padding: 1.5rem;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+      text-align: center;
+      transition: transform 0.3s ease;
+      cursor: pointer;
+    }
+
+    .member-card:hover {
+      transform: translateY(-5px);
+    }
+
+    .member-card h3 {
+      font-family: 'Jura', sans-serif;
+      font-size: 1.125rem;
+      margin-bottom: 0.5rem;
+      color: var(--text-primary);
+    }
+
+    .member-card p {
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+      margin-bottom: 0.25rem;
+    }
+
+    .member-details {
+      background: var(--surface);
+      border-radius: 0.375rem;
+      padding: 1.5rem;
+      margin-top: 1.5rem;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+      display: none;
+    }
+
+    .member-details h3 {
+      font-family: 'Jura', sans-serif;
+      font-size: 1.25rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .member-details p {
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+      margin-bottom: 0.5rem;
+    }
+
+    .member-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .stat-item {
+      background: var(--background);
+      padding: 1rem;
+      border-radius: 0.375rem;
+      border: 1px solid var(--border);
+      text-align: center;
+    }
+
+    .stat-item h4 {
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+      margin-bottom: 0.25rem;
+    }
+
+    .stat-item .stat-value {
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: var(--primary);
+    }
+
+    .golds-update-form {
+      margin-top: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      align-items: center;
+    }
+
+    .golds-update-form input {
+      width: 100%;
+      max-width: 200px;
+      padding: 0.5rem;
+      border: 1px solid var(--border);
+      border-radius: 0.375rem;
+      font-size: 0.875rem;
+    }
+
+    .golds-update-form button {
+      padding: 0.5rem 1rem;
+      background: var(--secondary);
+      color: white;
+      border: none;
+      border-radius: 0.375rem;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background 0.3s ease;
+    }
+
+    .golds-update-form button:hover {
+      background: var(--secondary-hover);
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    .modal-content {
+      background: var(--surface);
+      padding: 1.5rem;
+      border-radius: 0.375rem;
+      text-align: center;
+      max-width: 90%;
+      width: 500px;
+      box-shadow: var(--shadow);
+    }
+
+    .modal-content h2 {
+      font-family: 'Jura', sans-serif;
+      color: var(--text-primary);
+      margin-bottom: 0.5rem;
+      font-size: 1.25rem;
+    }
+
+    .modal-content p {
+      color: var(--text-secondary);
+      margin-bottom: 1rem;
+      font-size: 0.875rem;
+    }
+
+    .modal-content button {
+      padding: 0.5rem 1rem;
+      background: var(--secondary);
+      border: none;
+      color: white;
+      border-radius: 0.375rem;
+      cursor: pointer;
+      font-weight: 600;
+      margin: 0.25rem;
+      font-size: 0.875rem;
+    }
+
+    .modal-content button.cancel {
+      background: var(--accent);
+    }
+
+    .modal-content button.cancel:hover {
+      background: var(--accent);
+      transform: scale(1.05);
+    }
+
+    .modal-content button:hover {
+      background: var(--secondary-hover);
+      transform: scale(1.05);
+    }
+
+    @media (max-width: 600px) {
+      .header {
+        padding: 0.75rem;
+      }
+
+      .header h1 {
+        font-size: 1.25rem;
+      }
+
+      .search-container {
+        padding: 0 0.5rem;
+      }
+
+      .members-section {
+        padding: 1rem 0.5rem;
+      }
+
+      .members-section h2 {
+        font-size: 1.25rem;
+      }
+
+      .members-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .member-card {
+        padding: 1rem;
+      }
+
+      .member-card h3 {
+        font-size: 1rem;
+      }
+
+      .member-details {
+        padding: 1rem;
+      }
+
+      .member-stats {
+        grid-template-columns: 1fr;
+      }
+
+      .modal-content {
+        padding: 1rem;
+        width: 90%;
+      }
+    }
+  </style>
+</head>
+<body data-theme="light">
+  <header class="header">
+    <h1>Perfis de Membros</h1>
+    <button class="back-button" onclick="navigateBack()">Voltar ao Painel</button>
+  </header>
+
+  <main class="flex-grow w-full">
+    <div class="search-container">
+      <input type="text" id="searchInput" placeholder="Pesquisar membros por nome ou ID..." oninput="searchMembers()">
+    </div>
+
+    <section class="members-section">
+      <h2>Lista de Membros</h2>
+      <div class="members-grid" id="membersGrid"></div>
+    </section>
+
+    <section class="member-details" id="memberDetails">
+      <h3 id="memberName">Detalhes do Membro</h3>
+      <p><strong>ID:</strong> <span id="memberId"></span></p>
+      <p><strong>Data de Cadastro:</strong> <span id="memberRegistrationDate"></span></p>
+      <p><strong>Nível:</strong> <span id="memberLevel"></span></p>
+      <div class="member-stats">
+        <div class="stat-item">
+          <h4>Serviços Publicados</h4>
+          <div class="stat-value" id="memberServicesPublished">0</div>
+        </div>
+        <div class="stat-item">
+          <h4>Tarefas Aceitas</h4>
+          <div class="stat-value" id="memberTasksAccepted">0</div>
+        </div>
+        <div class="stat-item">
+          <h4>Golds Ganhos</h4>
+          <div class="stat-value" id="memberGoldsEarned">0</div>
+        </div>
+        <div class="stat-item">
+          <h4>Bilhetes Ganhos</h4>
+          <div class="stat-value" id="memberTicketsEarned">0</div>
+        </div>
+      </div>
+      <div class="golds-update-form">
+        <input type="number" id="goldsInput" placeholder="Adicionar Golds" min="0">
+        <button onclick="updateMemberGolds()">Atualizar Golds</button>
+      </div>
+    </section>
+
+    <div id="welcomeModal" class="modal">
+      <div class="modal-content">
+        <h2>Aviso</h2>
+        <p id="modalMessage"></p>
+        <button onclick="closeModal()">OK</button>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer py-4 mt-auto w-full">
+    <div class="container text-center">
+      <p class="text-sm">© 2025 YshippCommerce. Todos os direitos reservados. Desenvolvido por xAI.</p>
+      <div class="flex justify-center space-x-4 mt-2">
+        <a href="#" class="text-primary text-sm hover:underline">WhatsApp</a>
+        <a href="#" class="text-primary text-sm hover:underline">Facebook</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+      // Aplica o tema salvo imediatamente ao carregar a aba
+document.body.dataset.theme = localStorage.getItem('theme') || 'light';
+    // Apply saved theme
+    document.body.dataset.theme = localStorage.getItem('theme') || 'light';
+
+// Ouvinte global: atualiza o tema automaticamente se for alterado em outra aba
+window.addEventListener('storage', (event) => {
+  if (event.key === 'theme') {
+    document.body.dataset.theme = event.newValue || 'light';
+    console.log('Tema atualizado instantaneamente:', event.newValue);
+  }
+});
+
+    // Load existing data or initialize if first time
+    let serverMembersData = JSON.parse(localStorage.getItem('serverMembersData')) || [];
+
+    // If no data exists, initialize with default members and save
+    if (serverMembersData.length === 0) {
+      serverMembersData = [
+        {
+          id: generateUserId(0),
+          name: "Ana Silva",
+          level: "Iniciante",
+          golds: 2500,
+          registrationDate: "03/10/2025",
+          servicesPublished: [],
+          tasksAccepted: [],
+          goldsEarned: 0,
+          ticketsEarned: 0,
+          email: "ana.silva@example.com",
+          password: "senha123",
+          ip: "192.168.0.2"
+        },
+        {
+          id: generateUserId(1),
+          name: "Bruno Costa",
+          level: "Intermediário",
+          golds: 3200,
+          registrationDate: "02/10/2025",
+          servicesPublished: [],
+          tasksAccepted: [],
+          goldsEarned: 0,
+          ticketsEarned: 0,
+          email: "bruno.costa@example.com",
+          password: "senha123",
+          ip: "192.168.0.3"
+        },
+        {
+          id: generateUserId(2),
+          name: "Carla Mendes",
+          level: "Iniciante",
+          golds: 1500,
+          registrationDate: "01/10/2025",
+          servicesPublished: [],
+          tasksAccepted: [],
+          goldsEarned: 0,
+          ticketsEarned: 0,
+          email: "carla.mendes@example.com",
+          password: "senha123",
+          ip: "192.168.0.4"
+        },
+        {
+          id: generateUserId(3),
+          name: "Diego Oliveira",
+          level: "Avançado",
+          golds: 4500,
+          registrationDate: "30/09/2025",
+          servicesPublished: [],
+          tasksAccepted: [],
+          goldsEarned: 0,
+          ticketsEarned: 0,
+          email: "diego.oliveira@example.com",
+          password: "senha123",
+          ip: "192.168.0.5"
+        },
+        {
+          id: generateUserId(4),
+          name: "Elisa Ferreira",
+          level: "Iniciante",
+          golds: 800,
+          registrationDate: "29/09/2025",
+          servicesPublished: [],
+          tasksAccepted: [],
+          goldsEarned: 0,
+          ticketsEarned: 0,
+          email: "elisa.ferreira@example.com",
+          password: "senha123",
+          ip: "192.168.0.6"
+        },
+        {
+          id: generateUserId(5),
+          name: "Felipe Santos",
+          level: "Intermediário",
+          golds: 2800,
+          registrationDate: "28/09/2025",
+          servicesPublished: [],
+          tasksAccepted: [],
+          goldsEarned: 0,
+          ticketsEarned: 0,
+          email: "felipe.santos@example.com",
+          password: "senha123",
+          ip: "192.168.0.7"
+        },
+        {
+          id: generateUserId(6),
+          name: "Gabriela Lima",
+          level: "Iniciante",
+          golds: 1200,
+          registrationDate: "27/09/2025",
+          servicesPublished: [],
+          tasksAccepted: [],
+          goldsEarned: 0,
+          ticketsEarned: 0,
+          email: "gabriela.lima@example.com",
+          password: "senha123",
+          ip: "192.168.0.8"
+        },
+        {
+          id: generateUserId(7),
+          name: "Hugo Almeida",
+          level: "Avançado",
+          golds: 3900,
+          registrationDate: "26/09/2025",
+          servicesPublished: [],
+          tasksAccepted: [],
+          goldsEarned: 0,
+          ticketsEarned: 0,
+          email: "hugo.almeida@example.com",
+          password: "senha123",
+          ip: "192.168.0.9"
+        },
+        {
+          id: generateUserId(8),
+          name: "Isabela Rocha",
+          level: "Iniciante",
+          golds: 2000,
+          registrationDate: "25/09/2025",
+          servicesPublished: [],
+          tasksAccepted: [],
+          goldsEarned: 0,
+          ticketsEarned: 0,
+          email: "isabela.rocha@example.com",
+          password: "senha123",
+          ip: "192.168.0.10"
+        },
+        {
+          id: generateUserId(9),
+          name: "João Pereira",
+          level: "Intermediário",
+          golds: 3100,
+          registrationDate: "24/09/2025",
+          servicesPublished: [],
+          tasksAccepted: [],
+          goldsEarned: 0,
+          ticketsEarned: 0,
+          email: "joao.pereira@example.com",
+          password: "senha123",
+          ip: "192.168.0.11"
+        },
+        {
+          id: "#mgbmbwutH055H",
+          name: "Antônio Fabrício",
+          level: "Iniciante",
+          golds: 0,
+          registrationDate: "03/10/2025",
+          servicesPublished: [],
+          tasksAccepted: [],
+          goldsEarned: 0,
+          ticketsEarned: 0,
+          email: "yellowishippkwai@gmail.com",
+          password: "",
+          ip: "192.168.0.199"
+        }
+      ];
+      localStorage.setItem('serverMembersData', JSON.stringify(serverMembersData));
+    }
+
+    function generateUserId(index) {
+      const timestamp = (Date.now() - index * 86400000).toString(36);
+      const random = Math.random().toString(36).substr(2, 5);
+      return `#${timestamp}${random.toUpperCase()}`;
+    }
+
+    function saveMembersData() {
+      try {
+        localStorage.setItem('serverMembersData', JSON.stringify(serverMembersData));
+        serverMembersData.forEach(member => {
+          localStorage.setItem(`${member.id}_goldsTotal`, member.golds.toString());
+          localStorage.setItem(`${member.id}_goldsEarned`, member.goldsEarned.toString());
+          localStorage.setItem(`${member.id}_ticketsEarned`, member.ticketsEarned.toString());
+          localStorage.setItem(`${member.id}_servicesPublished`, JSON.stringify(member.servicesPublished));
+          localStorage.setItem(`${member.id}_tasksAccepted`, JSON.stringify(member.tasksAccepted));
+        });
+        console.log('Members data saved to localStorage');
+        window.dispatchEvent(new Event('storage')); // Trigger storage event for wallet
+      } catch (e) {
+        console.error('Error in saveMembersData:', e);
+        showModal('Erro ao salvar dados dos membros.');
+      }
+    }
+
+    function navigateBack() {
+      try {
+        const userId = new URLSearchParams(window.location.search).get('userId') || localStorage.getItem('activeUserId') || localStorage.getItem('currentUserId');
+        if (userId) {
+          window.location.href = `index.html?userId=${encodeURIComponent(userId)}`;
+        } else {
+          window.location.href = 'index.html';
+        }
+      } catch (e) {
+        console.error('Error in navigateBack:', e);
+        showModal('Erro ao voltar ao painel.');
+      }
+    }
+
+    function searchMembers() {
+      try {
+        const searchInput = document.getElementById('searchInput').value.toLowerCase();
+        const membersGrid = document.getElementById('membersGrid');
+        membersGrid.innerHTML = '';
+
+        const filteredMembers = serverMembersData.filter(member =>
+          member.name.toLowerCase().includes(searchInput) ||
+          member.id.toLowerCase().includes(searchInput)
+        );
+
+        filteredMembers.forEach(member => {
+          const card = document.createElement('div');
+          card.classList.add('member-card');
+          card.innerHTML = `
+            <h3>${member.name}</h3>
+            <p><strong>ID:</strong> ${member.id}</p>
+            <p><strong>Nível:</strong> ${member.level}</p>
+            <p><strong>Golds:</strong> ${member.golds}</p>
+          `;
+          card.addEventListener('click', () => showMemberDetails(member));
+          membersGrid.appendChild(card);
+        });
+
+        if (filteredMembers.length === 0) {
+          membersGrid.innerHTML = '<p style="color: var(--text-secondary); font-size: 0.875rem;">Nenhum membro encontrado.</p>';
+        }
+      } catch (e) {
+        console.error('Error in searchMembers:', e);
+        showModal('Erro ao pesquisar membros.');
+      }
+    }
+
+    function showMemberDetails(member) {
+      try {
+        const memberDetails = document.getElementById('memberDetails');
+        document.getElementById('memberName').textContent = member.name;
+        document.getElementById('memberId').textContent = member.id;
+        document.getElementById('memberRegistrationDate').textContent = member.registrationDate;
+        document.getElementById('memberLevel').textContent = member.level;
+        document.getElementById('memberServicesPublished').textContent = member.servicesPublished.length;
+        document.getElementById('memberTasksAccepted').textContent = member.tasksAccepted.length;
+        document.getElementById('memberGoldsEarned').textContent = member.goldsEarned;
+        document.getElementById('memberTicketsEarned').textContent = member.ticketsEarned;
+        memberDetails.style.display = 'block';
+        document.getElementById('goldsInput').dataset.memberId = member.id; // Store member ID for update
+        window.scrollTo({ top: memberDetails.offsetTop, behavior: 'smooth' });
+      } catch (e) {
+        console.error('Error in showMemberDetails:', e);
+        showModal('Erro ao exibir detalhes do membro.');
+      }
+    }
+
+    function updateMemberGolds() {
+      try {
+        const memberId = document.getElementById('goldsInput').dataset.memberId;
+        const goldsInput = parseInt(document.getElementById('goldsInput').value) || 0;
+        if (goldsInput < 0) {
+          showModal('Quantidade de Golds inválida.');
+          return;
+        }
+
+        const memberIndex = serverMembersData.findIndex(m => m.id === memberId);
+        if (memberIndex === -1) {
+          showModal('Membro não encontrado.');
+          return;
+        }
+
+        serverMembersData[memberIndex].golds += goldsInput;
+        serverMembersData[memberIndex].goldsEarned += goldsInput;
+        saveMembersData(); // Save updated data to localStorage
+        showMemberDetails(serverMembersData[memberIndex]);
+        searchMembers(); // Refresh members grid
+        showModal(`Adicionado ${goldsInput} Golds para ${serverMembersData[memberIndex].name}.`);
+        document.getElementById('goldsInput').value = '';
+      } catch (e) {
+        console.error('Error in updateMemberGolds:', e);
+        showModal('Erro ao atualizar Golds do membro.');
+      }
+    }
+
+    function showModal(message) {
+      try {
+        const modal = document.getElementById('welcomeModal');
+        document.getElementById('modalMessage').textContent = message;
+        modal.style.display = 'flex';
+        setTimeout(() => {
+          modal.style.display = 'none';
+        }, 3000);
+      } catch (e) {
+        console.error('Error in showModal:', e);
+      }
+    }
+
+    function closeModal() {
+      try {
+        document.getElementById('welcomeModal').style.display = 'none';
+      } catch (e) {
+        console.error('Error in closeModal:', e);
+      }
+    }
+
+    window.onload = () => {
+      try {
+        // Apply saved theme
+        document.body.dataset.theme = localStorage.getItem('theme') || 'light';
+
+        // Get userId from URL or localStorage
+        const userId = new URLSearchParams(window.location.search).get('userId') || localStorage.getItem('activeUserId') || localStorage.getItem('currentUserId');
+
+        if (!userId) {
+          showModal('Faça login primeiro!');
+          setTimeout(() => {
+            window.location.href = 'index.html';
+          }, 2000);
+          return;
+        }
+
+        // Save initial serverMembersData to localStorage if not already present
+        if (serverMembersData.length === 0) {
+          saveMembersData();
+        }
+
+        // Load memberId from URL if provided
+        const memberId = new URLSearchParams(window.location.search).get('memberId');
+        if (memberId) {
+          const member = serverMembersData.find(m => m.id === memberId);
+          if (member) {
+            showMemberDetails(member);
+          } else {
+            showModal('Membro não encontrado.');
+          }
+        }
+
+        searchMembers();
+      } catch (e) {
+        console.error('Error in window.onload:', e);
+        showModal('Erro ao inicializar página.');
+      }
+    };
+// Controle de versão do app
+const APP_VERSION = "1.5.0";
+const storedVersion = localStorage.getItem('APP_VERSION');
+
+if (storedVersion !== APP_VERSION) {
+  console.log(`Atualizando versão do app: ${storedVersion || 'nenhuma'} → ${APP_VERSION}`);
+  localStorage.clear();
+  localStorage.setItem('APP_VERSION', APP_VERSION);
+  location.reload();
+}
+    // Aplica o tema salvo ao carregar
+document.body.dataset.theme = localStorage.getItem('theme') || 'light';
+
+// Ouve mudanças globais de tema e aplica instantaneamente
+window.addEventListener('storage', (event) => {
+  if (event.key === 'theme') {
+    document.body.dataset.theme = event.newValue || 'light';
+    console.log('Tema atualizado instantaneamente:', event.newValue);
+  }
+});
+  </script>
+</body>
+</html>
