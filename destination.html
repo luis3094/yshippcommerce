@@ -1,43 +1,4 @@
-<script type="text/javascript">
-        var gk_isXlsx = false;
-        var gk_xlsxFileLookup = {};
-        var gk_fileData = {};
-        function filledCell(cell) {
-          return cell !== '' && cell != null;
-        }
-        function loadFileData(filename) {
-        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
-            try {
-                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
-                var firstSheetName = workbook.SheetNames[0];
-                var worksheet = workbook.Sheets[firstSheetName];
-
-                // Convert sheet to JSON to filter blank rows
-                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
-                // Filter out blank rows (rows where all cells are empty, null, or undefined)
-                var filteredData = jsonData.filter(row => row.some(filledCell));
-
-                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
-                var headerRowIndex = filteredData.findIndex((row, index) =>
-                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
-                );
-                // Fallback
-                if (headerRowIndex === -1 || headerRowIndex > 25) {
-                  headerRowIndex = 0;
-                }
-
-                // Convert filtered JSON back to CSV
-                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
-                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
-                return csv;
-            } catch (e) {
-                console.error(e);
-                return "";
-            }
-        }
-        return gk_fileData[filename] || "";
-        }
-        </script><!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
@@ -54,34 +15,91 @@
       background-color: #f0f0f0;
       color: #333;
     }
-    h2, p {
+    .container {
       text-align: center;
-    }
-    .success {
-      color: #2ecc71;
-      font-weight: bold;
+      padding: 20px;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     }
     .error {
       color: #e74c3c;
       font-weight: bold;
     }
+    .success {
+      color: #2ecc71;
+      font-weight: bold;
+    }
+    a {
+      color: #3498db;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
   </style>
   <script>
+    function getCurrentUserId() {
+      const stored = localStorage.getItem('currentUserId') || localStorage.getItem('activeUserId');
+      let profile = {};
+      try { profile = JSON.parse(localStorage.getItem('userProfile') || '{}'); } catch(e) { profile = {}; }
+      return stored || profile.id || 'defaultUser';
+    }
+
+    function prefKey(key) {
+      const id = getCurrentUserId() || 'defaultUser';
+      return `${id}_${key}`;
+    }
+
+    function isSameDay(dateStr) {
+      if (!dateStr) return false;
+      const lastDate = new Date(dateStr);
+      return lastDate.toDateString() === new Date().toDateString();
+    }
+
     window.onload = () => {
-      const params = new URLSearchParams(window.location.search);
-      const clickId = params.get("clickId");
-      const adId = params.get("adId");
-      if (clickId && adId) {
-        localStorage.setItem("click_validation", JSON.stringify({
-          clickId,
-          adId,
-          status: "validated",
-          timestamp: Date.now()
-        }));
-        document.body.innerHTML = "<h2 class='success'>✅ Visualização confirmada</h2>";
+      const urlParams = new URLSearchParams(window.location.search);
+      const clickId = urlParams.get('clickId');
+      const pendingClicks = JSON.parse(localStorage.getItem(prefKey('pendingClicks'))) || {};
+      const validatedClicks = JSON.parse(localStorage.getItem(prefKey('validatedClicks'))) || {};
+      const container = document.createElement('div');
+      container.className = 'container';
+      
+      if (clickId && pendingClicks[clickId]) {
+        const clickData = pendingClicks[clickId];
+        const timeWindow = 5 * 60 * 1000; // 5 minutos
+        const clickTime = new Date(clickData.timestamp).getTime();
+        const now = new Date().getTime();
+        if (Math.abs(now - clickTime) <= timeWindow && !validatedClicks[clickId] && !isSameDay(validatedClicks[`ad:${clickData.adId}:${clickData.index}`])) {
+          // Marca o clique como validado no localStorage
+          validatedClicks[clickId] = { ...clickData, processed: false }; // processed: false para processamento posterior no YshippCommerce
+          validatedClicks[`ad:${clickData.adId}:${clickData.index}`] = new Date().toISOString();
+          localStorage.setItem(prefKey('validatedClicks'), JSON.stringify(validatedClicks));
+          // Registra o evento de validação
+          localStorage.setItem('lastValidationEvent', JSON.stringify({
+            adId: clickData.adId,
+            clickId: clickId,
+            timestamp: Date.now()
+          }));
+          container.innerHTML = `
+            <p class="success">Visualização validada com sucesso!</p>
+            <p>Retorne ao YshippCommerce para confirmar seus Golds.</p>
+            <p><a href="https://yshippcommerce.com/">Voltar ao YshippCommerce</a></p>
+          `;
+        } else {
+          container.innerHTML = `
+            <p class="error">Erro: O clique expirou ou já foi validado.</p>
+            <p><a href="https://yshippcommerce.com/">Volte ao gerador de Golds</a></p>
+          `;
+        }
       } else {
-        document.body.innerHTML = "<p class='error'>Erro: parâmetros ausentes.</p>";
+        container.innerHTML = `
+          <p class="error">Erro: Nenhum clique pendente encontrado. Acesse o gerador de Golds primeiro!</p>
+          <p><a href="https://yshippcommerce.com/">Ir para o gerador de Golds</a></p>
+        `;
       }
+      document.body.appendChild(container);
     };
   </script>
 </head>
