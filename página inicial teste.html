@@ -1,0 +1,1776 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="description" content="Centro de Comando - YshippCommerce">
+  <title>Centro de Comando - YshippCommerce</title>
+  <link href="https://fonts.googleapis.com/css2?family=Jura:wght@400;700&family=Ubuntu:wght@400;500;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    :root {
+      --background: #f9fafb;
+      --surface: #ffffff;
+      --text-primary: #1f2937;
+      --text-secondary: #6b7280;
+      --primary: #7c3aed;
+      --primary-hover: #6d28d9;
+      --secondary: #10b981;
+      --secondary-hover: #059669;
+      --border: #e5e7eb;
+      --shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      --accent: #ff6b6b;
+      --nsfw-bg: #e74c3c;
+      --nsfw-hover: #c0392b;
+      --gold: #e67e22;
+      --progress-bg: #ecf0f1;
+      --tutorial-bg: #3498db;
+      --tutorial-hover: #2980b9;
+    }
+
+    [data-theme="dark"] {
+      --background: #1f2937;
+      --surface: #374151;
+      --text-primary: #f3f4f6;
+      --text-secondary: #9ca3af;
+      --border: #4b5563;
+      --shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+      --accent: #ff8787;
+      --nsfw-bg: #c0392b;
+      --nsfw-hover: #a5281a;
+      --progress-bg: #4b5563;
+      --tutorial-bg: #1e90ff;
+      --tutorial-hover: #1c86ee;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Ubuntu', sans-serif;
+      background: var(--background);
+      color: var(--text-primary);
+      line-height: 1.6;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      overflow-x: hidden;
+    }
+
+    .header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      padding: 1rem;
+      width: 100%;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: opacity 0.3s ease;
+    }
+
+    .header h1 {
+      font-family: 'Jura', sans-serif;
+      font-size: 1.8rem;
+      color: var(--text-primary);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .menu-button {
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .menu-button svg {
+      width: 24px;
+      height: 24px;
+      fill: var(--text-primary);
+    }
+
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: -250px;
+      width: 250px;
+      height: 100%;
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      z-index: 1000;
+      transition: left 0.5s ease-in-out;
+      opacity: 0.8;
+    }
+
+    .sidebar.open {
+      left: 0;
+    }
+
+    .sidebar-content {
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      height: 100%;
+      justify-content: space-between;
+    }
+
+    .sidebar-content > div {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .sidebar-button {
+      padding: 0.75rem;
+      background: var(--secondary);
+      color: white;
+      border: none;
+      border-radius: 0.375rem;
+      font-size: 0.875rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.3s ease, transform 0.2s ease;
+      text-align: center;
+    }
+
+    .sidebar-button.theme-button {
+      background: var(--tutorial-bg);
+    }
+
+    .sidebar-button.theme-button:hover {
+      background: var(--tutorial-hover);
+    }
+
+    .sidebar-button.earn-golds-button {
+      background: var(--secondary);
+    }
+
+    .sidebar-button.earn-golds-button:hover {
+      background: var(--secondary-hover);
+    }
+
+    .sidebar-button.logout {
+      background: black;
+      color: white;
+    }
+
+    .sidebar-button.logout:hover {
+      background: #333;
+    }
+
+    .sidebar-button:hover {
+      transform: scale(1.05);
+    }
+
+    .overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 999;
+    }
+
+    .overlay.active {
+      display: block;
+    }
+
+    .status-bar {
+      display: flex;
+      flex-direction: column;
+      padding: 1rem;
+      background: var(--surface);
+      box-shadow: var(--shadow);
+      gap: 1rem;
+      text-align: center;
+      font-size: 0.875rem;
+      font-weight: 600;
+      width: 100%;
+      max-width: 300px;
+      border-radius: 0.375rem;
+      margin: 1.5rem auto;
+    }
+
+    .status-bar div {
+      padding: 0.75rem;
+      background: var(--background);
+      border-radius: 0.375rem;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      width: 100%;
+    }
+
+    .status-bar div span.gold-amount,
+    .status-bar div span.ticket-amount {
+      color: var(--gold);
+    }
+
+    .status-bar div span.brl-amount {
+      color: var(--text-secondary);
+      font-size: 0.75rem;
+    }
+
+    .status-bar div button.eye-button {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 1rem;
+      color: var(--text-primary);
+      padding: 0;
+    }
+
+    .status-bar div button.eye-button:hover {
+      color: var(--primary);
+    }
+
+    .dashboard-section {
+      width: 100%;
+      max-width: 1200px;
+      padding: 1.5rem 1rem;
+      background: var(--surface);
+      border-radius: 0.375rem;
+      box-shadow: var(--shadow);
+      margin: 1.5rem 0;
+      animation: fadeIn 0.5s ease forwards;
+    }
+
+    .dashboard-section h2 {
+      font-family: 'Jura', sans-serif;
+      font-size: 1.5rem;
+      margin-bottom: 0.75rem;
+      color: var(--text-primary);
+    }
+
+    .profile-section {
+      background: var(--background);
+      border-radius: 0.375rem;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+      border: 1px solid var(--border);
+      text-align: center;
+    }
+
+    .profile-section h3 {
+      font-family: 'Jura', sans-serif;
+      font-size: 1.25rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .profile-section p {
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+      margin-bottom: 0.25rem;
+    }
+
+    .profile-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .stat-item {
+      background: var(--surface);
+      padding: 1rem;
+      border-radius: 0.375rem;
+      border: 1px solid var(--border);
+      text-align: center;
+    }
+
+    .stat-item h4 {
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+      margin-bottom: 0.25rem;
+    }
+
+    .stat-item .stat-value {
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: var(--primary);
+    }
+
+    .published-services-list,
+    .tasks-accepted-list {
+      margin-top: 1rem;
+      text-align: left;
+    }
+
+    .published-services-list h4,
+    .tasks-accepted-list h4 {
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+      margin-bottom: 0.5rem;
+    }
+
+    .service-item,
+    .task-item {
+      background: var(--surface);
+      padding: 0.75rem;
+      border-radius: 0.375rem;
+      margin-bottom: 0.5rem;
+      border: 1px solid var(--border);
+      font-size: 0.75rem;
+    }
+
+    .navigation-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      margin-top: 1rem;
+    }
+
+    .nav-card {
+      background: var(--background);
+      border-radius: 0.375rem;
+      padding: 1.5rem;
+      box-shadow: var(--shadow);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      border: 1px solid var(--border);
+      text-align: center;
+      cursor: pointer;
+    }
+
+    .nav-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .nav-card h3 {
+      font-family: 'Jura', sans-serif;
+      font-size: 1.125rem;
+      font-weight: 600;
+      margin-bottom: 0.75rem;
+      color: var(--text-primary);
+    }
+
+    .nav-card p {
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+      margin-bottom: 1rem;
+    }
+
+    .nav-card .nav-button {
+      width: 100%;
+      padding: 0.75rem;
+      background: var(--secondary);
+      color: white;
+      border: none;
+      border-radius: 0.375rem;
+      font-size: 0.875rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.3s ease, transform 0.2s ease;
+    }
+
+    .nav-card .nav-button:hover {
+      background: var(--secondary-hover);
+      transform: scale(1.05);
+    }
+
+    .members-profiles-section {
+      margin-top: 2rem;
+    }
+
+    .members-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .member-card {
+      background: var(--background);
+      border-radius: 0.375rem;
+      padding: 1rem;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+      text-align: center;
+      transition: transform 0.3s ease;
+      cursor: pointer;
+    }
+
+    .member-card:hover {
+      transform: translateY(-3px);
+    }
+
+    .member-card h4 {
+      font-family: 'Jura', sans-serif;
+      font-size: 1rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .member-card p {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    .modal-content {
+      background: var(--surface);
+      padding: 1.5rem;
+      border-radius: 0.375rem;
+      text-align: center;
+      animation: slideIn 0.5s ease forwards;
+      max-width: 90%;
+      width: 500px;
+      box-shadow: var(--shadow);
+    }
+
+    .modal-content h2 {
+      font-family: 'Jura', sans-serif;
+      color: var(--text-primary);
+      margin-bottom: 0.5rem;
+      font-size: 1.25rem;
+    }
+
+    .modal-content p {
+      color: var(--text-secondary);
+      margin-bottom: 1rem;
+      font-size: 0.875rem;
+    }
+
+    .modal-content input,
+    .modal-content textarea {
+      width: 100%;
+      padding: 0.75rem;
+      margin: 0.5rem 0;
+      border: 1px solid var(--border);
+      border-radius: 0.375rem;
+      font-size: 0.875rem;
+      background: var(--surface);
+      color: var(--text-primary);
+    }
+
+    .modal-content button {
+      padding: 0.5rem 1rem;
+      background: var(--secondary);
+      border: none;
+      color: white;
+      border-radius: 0.375rem;
+      cursor: pointer;
+      font-weight: 600;
+      margin: 0.25rem;
+      font-size: 0.875rem;
+    }
+
+    .modal-content button.cancel {
+      background: var(--accent);
+    }
+
+    .modal-content button.cancel:hover {
+      background: var(--nsfw-hover);
+      transform: scale(1.05);
+    }
+
+    .modal-content button:hover {
+      background: var(--secondary-hover);
+      transform: scale(1.05);
+    }
+
+    .login-section,
+    .register-section {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: var(--surface);
+      padding: 2rem;
+      margin: 0;
+      box-shadow: var(--shadow);
+      text-align: center;
+      display: none;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      z-index: 1001;
+    }
+
+    .login-section h2,
+    .register-section h2 {
+      font-family: 'Jura', sans-serif;
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+      color: var(--text-primary);
+    }
+
+    .login-section input,
+    .register-section input {
+      width: 100%;
+      padding: 0.75rem;
+      margin: 0.5rem 0;
+      border: 1px solid var(--border);
+      border-radius: 0.375rem;
+      font-size: 0.875rem;
+      background: var(--surface);
+      color: var(--text-primary);
+      max-width: 400px;
+    }
+
+    .login-section .checkbox-container,
+    .register-section .checkbox-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      margin: 0.5rem 0;
+    }
+
+    .login-section input[type="checkbox"] {
+      width: 1rem;
+      height: 1rem;
+      cursor: pointer;
+    }
+
+    .login-section input[type="checkbox"]:checked {
+      background-color: var(--secondary);
+      border-color: var(--secondary);
+    }
+
+    .login-section a,
+    .register-section a {
+      color: var(--primary);
+      font-size: 0.875rem;
+      text-decoration: underline;
+      cursor: pointer;
+    }
+
+    .login-section a:hover,
+    .register-section a:hover {
+      color: var(--primary-hover);
+    }
+
+    .cookie-banner {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background: var(--surface);
+      color: var(--text-primary);
+      padding: 1rem;
+      box-shadow: var(--shadow);
+      border-top: 1px solid var(--border);
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      align-items: center;
+      text-align: center;
+    }
+
+    [data-theme="dark"] .cookie-banner {
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+    }
+
+    .cookie-banner .content {
+      font-size: 0.875rem;
+    }
+
+    .cookie-banner .content a {
+      color: var(--primary);
+      text-decoration: underline;
+    }
+
+    .cookie-banner .content a:hover {
+      color: var(--primary-hover);
+    }
+
+    .cookie-banner .buttons {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .cookie-banner button {
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: 0.375rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.3s ease;
+      font-size: 0.875rem;
+    }
+
+    .cookie-banner button.accept {
+      background: var(--secondary);
+      color: white;
+    }
+
+    .cookie-banner button.accept:hover {
+      background: var(--secondary-hover);
+    }
+
+    .cookie-banner button.decline {
+      background: transparent;
+      color: var(--text-primary);
+      border: 1px solid var(--border);
+    }
+
+    .cookie-banner button.decline:hover {
+      background: var(--accent);
+      color: white;
+    }
+
+    .view-all-button {
+      padding: 0.5rem 1rem;
+      background: var(--secondary);
+      color: white;
+      font-size: 0.875rem;
+      font-weight: 600;
+      border-radius: 0.375rem;
+      cursor: pointer;
+      transition: background 0.3s ease, transform 0.2s ease;
+      margin-top: 1rem;
+    }
+
+    .view-all-button:hover {
+      background: var(--secondary-hover);
+      transform: scale(1.05);
+    }
+
+    .wallet-card {
+      background: var(--background);
+      border-radius: 0.375rem;
+      padding: 1.5rem;
+      box-shadow: var(--shadow);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      border: 1px solid var(--border);
+      text-align: center;
+      cursor: pointer;
+      margin: 1rem auto 0;
+      max-width: 250px;
+    }
+
+    .wallet-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .wallet-card h3 {
+      font-family: 'Jura', sans-serif;
+      font-size: 1.125rem;
+      font-weight: 600;
+      margin-bottom: 0.75rem;
+      color: var(--text-primary);
+    }
+
+    .wallet-card p {
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+      margin-bottom: 1rem;
+    }
+
+    .wallet-card .nav-button {
+      width: 100%;
+      padding: 0.75rem;
+      background: var(--secondary);
+      color: white;
+      border: none;
+      border-radius: 0.375rem;
+      font-size: 0.875rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.3s ease, transform 0.2s ease;
+    }
+
+    .wallet-card .nav-button:hover {
+      background: var(--secondary-hover);
+      transform: scale(1.05);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: scale(0.8); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    @media (max-width: 600px) {
+      .header {
+        padding: 0.75rem;
+        flex-direction: row;
+        gap: 0.5rem;
+      }
+
+      .header h1 {
+        font-size: 1.25rem;
+      }
+
+      .view-all-button,
+      .sidebar-button {
+        width: 100%;
+        max-width: none;
+      }
+
+      .status-bar {
+        font-size: 0.75rem;
+        padding: 0.5rem;
+        max-width: 100%;
+      }
+
+      .status-bar div {
+        padding: 0.5rem;
+      }
+
+      .dashboard-section {
+        padding: 1rem 0.5rem;
+      }
+
+      .dashboard-section h2 {
+        font-size: 1.25rem;
+      }
+
+      .navigation-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .nav-card {
+        padding: 1rem;
+      }
+
+      .nav-card h3 {
+        font-size: 1rem;
+      }
+
+      .members-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .profile-stats {
+        grid-template-columns: 1fr;
+      }
+
+      .modal-content {
+        padding: 1rem;
+        width: 90%;
+      }
+
+      .cookie-banner .buttons {
+        flex-direction: column;
+        width: 100%;
+      }
+
+      .cookie-banner button {
+        width: 100%;
+      }
+
+      .login-section,
+      .register-section {
+        padding: 1rem;
+      }
+
+      .wallet-card {
+        padding: 1rem;
+        max-width: 100%;
+      }
+
+      .sidebar {
+        width: 80%;
+        max-width: 200px;
+        height: 100%;
+      }
+    }
+
+    @media (min-width: 601px) and (max-width: 1024px) {
+      .header h1 {
+        font-size: 1.5rem;
+      }
+
+      .dashboard-section {
+        padding: 1rem;
+      }
+
+      .dashboard-section h2 {
+        font-size: 1.4rem;
+      }
+
+      .wallet-card {
+        max-width: 300px;
+      }
+    }
+  </style>
+</head>
+<body data-theme="light">
+  <script type="text/javascript">
+    var gk_isXlsx = false;
+    var gk_xlsxFileLookup = {};
+    var gk_fileData = {};
+    function filledCell(cell) {
+      return cell !== '' && cell != null;
+    }
+    function loadFileData(filename) {
+      if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+        try {
+          var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+          var firstSheetName = workbook.SheetNames[0];
+          var worksheet = workbook.Sheets[firstSheetName];
+          var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+          var filteredData = jsonData.filter(row => row.some(filledCell));
+          var headerRowIndex = filteredData.findIndex((row, index) =>
+            row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+          );
+          if (headerRowIndex === -1 || headerRowIndex > 25) {
+            headerRowIndex = 0;
+          }
+          var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex));
+          csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+          return csv;
+        } catch (e) {
+          console.error('Error loading file data:', e);
+          return "";
+        }
+      }
+      return gk_fileData[filename] || "";
+    }
+  </script>
+
+  <div id="sidebar" class="sidebar">
+    <div class="sidebar-content">
+      <div>
+        <button class="sidebar-button theme-button" id="theme-toggle">Alternar Tema</button>
+        <button class="sidebar-button earn-golds-button" id="earn-golds">Ganhar Golds</button>
+      </div>
+      <button class="sidebar-button logout" onclick="logout()">Sair</button>
+    </div>
+  </div>
+  <div id="overlay" class="overlay" onclick="toggleSidebar()"></div>
+
+  <main class="flex-grow w-full">
+    <header id="header" class="header" role="banner" style="display: none;">
+      <h1>Centro de Comando - YshippCommerce</h1>
+      <button id="menu-toggle" class="menu-button">
+        <svg viewBox="0 0 24 24">
+          <path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/>
+        </svg>
+      </button>
+    </header>
+    <!-- Bloco da Carteira -->
+<div id="carteira-container" class="status-bar" style="text-align:center; margin: 1rem auto; background: var(--surface); box-shadow: var(--shadow); border-radius: 8px; padding: 1rem;">
+  <div>SALDO EM GOLDS: <span id="golds-balance">0</span></div>
+  <div>SALDO EM REAIS: <span id="reais-balance">R$ 0,00</span></div>
+  <p>Usuário: <span id="user-info"></span></p>
+</div>
+    <div id="wallet-card" class="wallet-card" style="display: none;">
+      <h3>Carteira</h3>
+      <p>Gerencie seus Golds, transações e histórico de saldo.</p>
+      <button class="nav-button" onclick="navigateTo('YshippCommerceWallet.html')">Acessar Carteira</button>
+    </div>
+    <!-- Bloco da Carteira -->
+    <section id="loginSection" class="login-section">
+      <h2>Conecte-se</h2>
+      <input type="email" id="loginEmail" placeholder="Digite seu e-mail">
+      <input type="password" id="loginPassword" placeholder="Digite sua senha">
+      <div class="checkbox-container">
+        <input type="checkbox" id="rememberMe">
+        <label for="rememberMe">Lembre de mim</label>
+      </div>
+      <a href="https://wa.me/+5535984072446" target="_blank">Esqueceu sua senha?</a>
+      <button class="nav-button" onclick="login()" style="width: 100%; margin-top: 1rem;">Entrar</button>
+      <p style="margin-top: 1rem;">Novo no YshippCommerce ? <a onclick="showRegister()">Crie uma conta</a></p>
+    </section>
+
+    <section id="registerSection" class="register-section">
+      <h2>Inscrever-se</h2>
+      <p style="color: var(--text-secondary); margin-bottom: 1rem;">Nome real  (apenas para verificação interna)</p>
+      <input type="text" id="firstName" placeholder="Primeiro nome(s)">
+      <input type="text" id="lastName" placeholder="Sobrenome(s)">
+      <input type="text" id="nickname" placeholder="Apelido">
+      <input type="email" id="registerEmail" placeholder="E-mail">
+      <input type="password" id="registerPassword" placeholder="Senha">
+      <input type="password" id="confirmPassword" placeholder="Confirme sua senha">
+      <button class="nav-button" onclick="register()" style="width: 100%; margin-top: 1rem;">Inscrever-se</button>
+      <p style="margin-top: 1rem;">Já tem uma conta? <a onclick="showLogin()">Conecte-se</a></p>
+    </section>
+
+    <div id="status-bar" class="status-bar" role="region" aria-label="Resumo de Golds e Bilhetes" style="display: none;">
+      <div>
+        <span><span id="golds-available" class="gold-amount"></span> <span id="brl-available" class="brl-amount"></span></span>
+      </div>
+      <div>
+        <span> <span id="golds-total" class="gold-amount">900</span> <span id="brl-total" class="brl-amount">/span> <button id="toggle-total" class="eye-button">➕</button></span>
+      </div>
+      <div>
+        <span> <span id="tickets-available" class="ticket-amount"></span></span>
+      </div>
+    </div>
+
+    <section id="dashboard-section" class="dashboard-section" style="display: none;">
+      <h2>Perfil de Membro</h2>
+      <div class="profile-section" id="profileSection">
+        <h3 id="profileName">Bem-vindo, Usuário!</h3>
+        <p>ID de Membro: <span id="userIdDisplay"></span></p>
+        <p>Data de Cadastro: <span id="registrationDate"></span></p>
+        <p>Nível: <span id="userLevel">Iniciante</span></p>
+
+        <div class="profile-stats">
+          <div class="stat-item">
+            <h4>Serviços Publicados</h4>
+            <div class="stat-value" id="servicesPublishedCount">0</div>
+          </div>
+          <div class="stat-item">
+            <h4>Tarefas Aceitas</h4>
+            <div class="stat-value" id="tasksAcceptedCount">0</div>
+          </div>
+          <div class="stat-item">
+            <h4>Golds Ganhos</h4>
+            <div class="stat-value" id="goldsEarned">0</div>
+          </div>
+          <div class="stat-item">
+            <h4>Bilhetes Ganhos</h4>
+            <div class="stat-value" id="ticketsEarned">0</div>
+          </div>
+        </div>
+
+        <div class="published-services-list" id="publishedServicesList">
+          <h4>Serviços Publicados Recentemente</h4>
+          <div id="servicesListContainer"></div>
+        </div>
+
+        <div class="tasks-accepted-list" id="tasksAcceptedList">
+          <h4>Tarefas Realizadas Recentemente</h4>
+          <div id="tasksListContainer"></div>
+        </div>
+      </div>
+
+      <div id="navigationSection">
+        <h2>Painel de Navegação</h2>
+        <p style="margin-bottom: 1rem; color: var(--text-secondary);">Acesse rapidamente as principais seções da YshippCommerce. Todas as ações serão vinculadas ao seu ID de usuário.</p>
+        <div class="navigation-grid">
+          <div class="nav-card">
+            <h3>Gerador de Bilhetes e Golds</h3>
+            <p>Crie bilhetes e ganhe Golds participando de sorteios.</p>
+            <button class="nav-button" onclick="navigateTo('YshippCommerceBilheteGenerator.html')">Acessar</button>
+          </div>
+          <div class="nav-card">
+            <h3>Loja</h3>
+            <p>Compre cartões presente, itens e catálogos com seus Golds.</p>
+            <button class="nav-button" onclick="navigateTo('YshippCommerceStore.html')">Acessar</button>
+          </div>
+          <div class="nav-card">
+            <h3>Mercado de Serviços</h3>
+            <p>Publique ou aceite tarefas pagas em Golds.</p>
+            <button class="nav-button" onclick="navigateTo('YshippCommerceServiceMarket.html')">Acessar</button>
+          </div>
+          <div class="nav-card">
+            <h3>Loja de Serviços</h3>
+            <p>Visualize e aceite serviços disponíveis para ganhar recompensas.</p>
+            <button class="nav-button" onclick="navigateTo('YshippCommerceServicesStore.html')">Acessar</button>
+          </div>
+          <div class="nav-card">
+            <h3>Sorteios e Leilões</h3>
+            <p>Participe de sorteios e leilões para ganhar prêmios.</p>
+            <button class="nav-button" onclick="navigateTo('YshippCommerceSorteiosLeiloes.html')">Acessar</button>
+          </div>
+        </div>
+
+        <div class="members-profiles-section">
+          <h2>Perfis de Membros Destacados</h2>
+          <p style="margin-bottom: 1rem; color: var(--text-secondary);">Veja outros membros ativos na comunidade.</p>
+          <button class="view-all-button" onclick="navigateTo('MemberProfile.html')">Ver Tudo</button>
+          <div class="members-grid" id="membersGrid"></div>
+        </div>
+      </div>
+    </section>
+
+    <div id="welcomeModal" class="modal" role="dialog" aria-labelledby="welcomeMessage">
+      <div class="modal-content">
+        <h2 id="welcomeMessage">Aviso</h2>
+        <p></p>
+        <button class="secondary-button" onclick="closeModal('welcomeModal')">OK</button>
+      </div>
+    </div>
+
+    <div id="profileModal" class="modal" role="dialog" aria-labelledby="profileMessage">
+      <div class="modal-content">
+        <h2 id="profileMessage">Perfil Enviado para Aprovação!</h2>
+        <p id="profileDetails"></p>
+        <button class="secondary-button" onclick="closeModal('profileModal')">OK</button>
+      </div>
+    </div>
+  </main>
+
+  <footer id="footer" class="footer py-4 mt-auto w-full" style="display: none;">
+    <div class="container text-center">
+      <p class="text-sm">© 2025 YshippCommerce. Todos os direitos reservados. Desenvolvido por xAI.</p>
+      <div class="flex justify-center space-x-4 mt-2">
+        <a href="#" class="text-primary text-sm hover:underline">WhatsApp</a>
+        <a href="#" class="text-primary text-sm hover:underline">Facebook</a>
+      </div>
+    </div>
+  </footer>
+
+  <div id="cookieBanner" class="cookie-banner" style="display: none;">
+    <div class="content">
+      <p>Este site utiliza cookies para garantir o funcionamento do site, medir o tráfego e otimizar o conteúdo da página. Ao utilizar nosso site, você concorda com o uso de cookies para esses fins. <a href="#" target="_blank">Você pode ler mais sobre cookies, incluindo como desativá-los, em nossa política de privacidade e cookies.</a></p>
+    </div>
+    <div class="buttons">
+      <button class="accept" onclick="acceptCookies()">Entendido</button>
+      <button class="decline" onclick="declineCookies()">Recusar</button>
+    </div>
+  </div>
+
+  <script>
+    const menuToggleBtn = document.getElementById('menu-toggle');
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('overlay');
+    const themeToggleBtn = document.getElementById('theme-toggle');
+    const earnGoldsBtn = document.getElementById('earn-golds');
+    const header = document.getElementById('header');
+    const goldsAvailableSpan = document.getElementById('golds-available');
+    const goldsTotalSpan = document.getElementById('golds-total');
+    const brlAvailableSpan = document.getElementById('brl-available');
+    const brlTotalSpan = document.getElementById('brl-total');
+    const ticketsAvailableSpan = document.getElementById('tickets-available');
+    const toggleTotalBtn = document.getElementById('toggle-total');
+
+    let showBalances = true;
+    let goldsAvailable = 0;
+    let goldsTotal = 900;
+    let ticketsAvailable = 0;
+
+    themeToggleBtn.addEventListener('click', () => {
+      const body = document.body;
+      body.dataset.theme = body.dataset.theme === 'light' ? 'dark' : 'light';
+      localStorage.setItem('theme', body.dataset.theme);
+      console.log('Theme toggled to:', body.dataset.theme);
+    });
+
+    earnGoldsBtn.addEventListener('click', () => {
+      navigateTo('YshippCommerceBilheteGenerator.html');
+    });
+
+    function toggleSidebar() {
+      try {
+        const isOpen = sidebar.classList.contains('open');
+        sidebar.classList.toggle('open', !isOpen);
+        overlay.classList.toggle('active', !isOpen);
+        console.log('Sidebar toggled:', isOpen ? 'closed' : 'opened');
+      } catch (e) {
+        console.error('Error in toggleSidebar:', e);
+        showModal('welcomeModal', 'Erro ao abrir/fechar o menu.');
+      }
+    }
+
+    menuToggleBtn.addEventListener('click', toggleSidebar);
+
+    function toggleBalanceVisibility() {
+      try {
+        showBalances = !showBalances;
+        updateBalanceDisplay();
+        localStorage.setItem('showBalances', showBalances);
+        console.log('Balance visibility toggled:', showBalances);
+      } catch (e) {
+        console.error('Error in toggleBalanceVisibility:', e);
+        showModal('welcomeModal', 'Erro ao alternar visibilidade do saldo.');
+      }
+    }
+
+    toggleTotalBtn.addEventListener('click', toggleBalanceVisibility);
+
+    function updateBalanceDisplay() {
+      const hiddenText = '••••••';
+      goldsAvailableSpan.textContent = goldsAvailable;
+      brlAvailableSpan.textContent = `R$${goldToBRL(goldsAvailable)} BRL`;
+      goldsTotalSpan.textContent = showBalances ? goldsTotal : hiddenText;
+      brlTotalSpan.textContent = showBalances ? `R$${goldToBRL(goldsTotal)} BRL` : hiddenText;
+      toggleTotalBtn.textContent = showBalances ? '➕' : '➖';
+    }
+
+    function goldToBRL(gold) {
+      const brl = (gold / 1000).toFixed(2).replace('.', ',');
+      return brl;
+    }
+
+    function logout() {
+      try {
+        localStorage.removeItem('currentUserId');
+        localStorage.removeItem('rememberedUserId');
+        localStorage.removeItem('userProfile');
+        localStorage.removeItem('showBalances');
+        localStorage.removeItem(`${currentUserId}_ticketsAvailable`);
+        localStorage.removeItem(`${currentUserId}_ticketsEarned`);
+        currentUserId = null;
+        sidebar.classList.remove('open');
+        overlay.classList.remove('active');
+        showLogin();
+        console.log('User logged out');
+      } catch (e) {
+        console.error('Error in logout:', e);
+        showModal('welcomeModal', 'Erro ao sair da conta.');
+      }
+    }
+
+    function updateHeaderOpacity() {
+      const scrollY = window.scrollY;
+      const triggerHeight = window.innerHeight / 2;
+      const maxOpacity = 1;
+      const minOpacity = 0.7;
+      let opacity = maxOpacity;
+
+      if (scrollY <= triggerHeight) {
+        opacity = maxOpacity - ((maxOpacity - minOpacity) * scrollY) / triggerHeight;
+      } else {
+        opacity = minOpacity;
+      }
+
+      header.style.opacity = opacity.toFixed(2);
+    }
+
+    window.addEventListener('scroll', updateHeaderOpacity);
+
+    const APP_VERSION = "1.5.0"; // Versão principal YshippCommerce
+
+const storedVersion = localStorage.getItem('APP_VERSION');
+if (storedVersion !== APP_VERSION) {
+  console.log(`Atualizando versão do app: ${storedVersion || 'nenhuma'} → ${APP_VERSION}`);
+  localStorage.clear();
+  localStorage.setItem('APP_VERSION', APP_VERSION);
+  location.reload();
+}
+
+let currentUserId = null
+    function showLogin() {
+      try {
+        document.getElementById('loginSection').style.display = 'flex';
+        document.getElementById('registerSection').style.display = 'none';
+        document.getElementById('header').style.display = 'none';
+        document.getElementById('wallet-card').style.display = 'none';
+        document.getElementById('status-bar').style.display = 'none';
+        document.getElementById('dashboard-section').style.display = 'none';
+        document.getElementById('footer').style.display = 'none';
+        sidebar.classList.remove('open');
+        overlay.classList.remove('active');
+        console.log('Login section displayed');
+      } catch (e) {
+        console.error('Error in showLogin:', e);
+        showModal('welcomeModal', 'Erro ao exibir tela de login. Tente novamente.');
+      }
+    }
+
+    function showRegister() {
+      try {
+        document.getElementById('loginSection').style.display = 'none';
+        document.getElementById('registerSection').style.display = 'flex';
+        document.getElementById('header').style.display = 'none';
+        document.getElementById('wallet-card').style.display = 'none';
+        document.getElementById('status-bar').style.display = 'none';
+        document.getElementById('dashboard-section').style.display = 'none';
+        document.getElementById('footer').style.display = 'none';
+        sidebar.classList.remove('open');
+        overlay.classList.remove('active');
+        console.log('Register section displayed');
+      } catch (e) {
+        console.error('Error in showRegister:', e);
+        showModal('welcomeModal', 'Erro ao exibir tela de registro. Tente novamente.');
+      }
+    }
+
+    function login() {
+      try {
+        const email = document.getElementById('loginEmail').value.trim();
+        const password = document.getElementById('loginPassword').value;
+        const rememberMe = document.getElementById('rememberMe').checked;
+
+        const members = JSON.parse(localStorage.getItem('serverMembersData')) || [];
+        const pendingProfile = JSON.parse(localStorage.getItem('pendingUserProfile'));
+
+        let member = members.find(m => m.email === email && m.password === password);
+        if (!member && pendingProfile && pendingProfile.email === email && pendingProfile.password === password) {
+          const now = new Date();
+          if (new Date(pendingProfile.expirationDate) > now) {
+            member = { id: pendingProfile.id, email: pendingProfile.email, password: password };
+          } else {
+            showModal('welcomeModal', 'Seu pedido de cadastro expirou após 48 horas.');
+            return;
+          }
+        }
+
+        if (!member) {
+          showModal('welcomeModal', 'E-mail ou senha incorretos.');
+          return;
+        }
+
+        currentUserId = member.id;
+        localStorage.setItem('currentUserId', currentUserId);
+        if (rememberMe) {
+          localStorage.setItem('rememberedUserId', currentUserId);
+          console.log('User ID remembered:', currentUserId);
+        } else {
+          localStorage.removeItem('rememberedUserId');
+        }
+
+        localStorage.setItem('userProfile', JSON.stringify({
+          id: member.id,
+          name: member.name || (pendingProfile ? pendingProfile.name : ''),
+          email: member.email,
+          registrationDate: member.registrationDate || (pendingProfile ? pendingProfile.registrationDate : ''),
+          level: member.level || (pendingProfile ? pendingProfile.level : '')
+        }));
+
+        initializeAfterLogin();
+      } catch (e) {
+        console.error('Error in login:', e);
+        showModal('welcomeModal', 'Erro ao fazer login. Tente novamente.');
+      }
+    }
+
+    function register() {
+      try {
+        const firstName = document.getElementById('firstName').value.trim();
+        const lastName = document.getElementById('lastName').value.trim();
+        const nickname = document.getElementById('nickname').value.trim();
+        const email = document.getElementById('registerEmail').value.trim();
+        const password = document.getElementById('registerPassword').value;
+        const confirmPassword = document.getElementById('confirmPassword').value;
+
+        if (!firstName || !lastName || !nickname || !email || !password || !confirmPassword) {
+          showModal('welcomeModal', 'Preencha todos os campos.');
+          return;
+        }
+
+        if (password !== confirmPassword) {
+          showModal('welcomeModal', 'As senhas não coincidem.');
+          return;
+        }
+
+        const members = JSON.parse(localStorage.getItem('serverMembersData')) || [];
+        if (members.some(m => m.email === email)) {
+          showModal('welcomeModal', 'Este e-mail já está registrado.');
+          return;
+        }
+
+        if (members.some(m => m.name.toLowerCase() === `${firstName} ${lastName}`.toLowerCase())) {
+          showModal('welcomeModal', 'Este nome já está registrado.');
+          return;
+        }
+
+        const ip = localStorage.getItem('userIp') || '192.168.0.' + (Math.floor(Math.random() * 255) + 1);
+        const adminIp = '192.168.0.1';
+        if (ip !== adminIp && members.some(m => m.ip === ip)) {
+          showModal('welcomeModal', 'Já existe uma conta registrada para este IP.');
+          return;
+        }
+
+        const newUserId = generateUserId();
+        const registrationDate = new Date().toLocaleDateString('pt-BR');
+        const expirationDate = new Date();
+        expirationDate.setHours(expirationDate.getHours() + 48); // 48-hour validity
+
+        const newMember = {
+          id: newUserId,
+          name: `${firstName} ${lastName}`,
+          level: "Iniciante",
+          golds: 900,
+          registrationDate: registrationDate,
+          servicesPublished: [],
+          tasksAccepted: [],
+          goldsEarned: 0,
+          ticketsEarned: 0,
+          email: email,
+          password: password,
+          ip: ip
+        };
+
+        // Prepare WhatsApp message
+        const message = `Novo registro de usuário:\n` +
+                        `Nome: ${firstName} ${lastName}\n` +
+                        `Apelido: ${nickname}\n` +
+                        `ID: ${newUserId}\n` +
+                        `E-mail: ${email}\n` +
+                        `Data de Cadastro: ${registrationDate}\n` +
+                        `IP: ${ip}`;
+        const encodedMessage = encodeURIComponent(message);
+        const whatsappUrl = `https://wa.me/+5535984072446?text=${encodedMessage}`;
+
+        // Display profile modal for 6 seconds before WhatsApp redirection
+        document.getElementById('profileDetails').innerHTML = `
+          <p><strong>Nome:</strong> ${firstName} ${lastName}</p>
+          <p><strong>ID Gerado:</strong> ${newUserId}</p>
+          <p><strong>Data de Cadastro:</strong> ${registrationDate}</p>
+          <p>Seu perfil foi enviado para aprovação via WhatsApp. Aguarde confirmação.</p>
+        `;
+        document.getElementById('profileModal').style.display = 'flex';
+        setTimeout(() => {
+          document.getElementById('profileModal').style.display = 'none';
+          window.open(whatsappUrl, '_blank'); // Redirect to WhatsApp after 6 seconds
+        }, 6000);
+
+        // Store temporary user data with expiration
+        localStorage.setItem('pendingUserProfile', JSON.stringify({
+          id: newUserId,
+          name: `${firstName} ${lastName}`,
+          email: email,
+          password: password,
+          registrationDate: registrationDate,
+          level: 'Iniciante',
+          expirationDate: expirationDate.toISOString()
+        }));
+
+        localStorage.setItem(`${newUserId}_goldsAvailable`, '0');
+        localStorage.setItem(`${newUserId}_goldsTotal`, '900');
+        localStorage.setItem(`${newUserId}_ticketsAvailable`, '0');
+        localStorage.setItem(`${newUserId}_ticketsEarned`, '0');
+        localStorage.setItem(`${newUserId}_dashboardVersion`, APP_VERSION);
+        localStorage.setItem(`${newUserId}_publishedServices`, JSON.stringify([]));
+        localStorage.setItem(`${newUserId}_servicesPublishedCount`, '0');
+        localStorage.setItem(`${newUserId}_tasksAcceptedCount`, '0');
+        localStorage.setItem(`${newUserId}_tasksAccepted`, JSON.stringify([]));
+        localStorage.setItem(`${newUserId}_goldsEarned`, '0');
+
+        // Check approval status periodically
+        const interval = setInterval(() => {
+          const members = JSON.parse(localStorage.getItem('serverMembersData')) || [];
+          const pendingProfile = JSON.parse(localStorage.getItem('pendingUserProfile'));
+          if (pendingProfile && pendingProfile.id === newUserId) {
+            const isApproved = members.some(m => m.id === newUserId);
+            if (isApproved) {
+              clearInterval(interval);
+              localStorage.setItem('userProfile', JSON.stringify({
+                id: newUserId,
+                name: pendingProfile.name,
+                email: pendingProfile.email,
+                registrationDate: pendingProfile.registrationDate,
+                level: pendingProfile.level
+              }));
+              localStorage.removeItem('pendingUserProfile');
+              if (currentUserId === newUserId) {
+                showModal('welcomeModal', 'Cadastro realizado com sucesso! Seu perfil foi ativado.');
+              }
+            } else {
+              const now = new Date();
+              if (new Date(pendingProfile.expirationDate) < now) {
+                clearInterval(interval);
+                localStorage.removeItem('pendingUserProfile');
+                localStorage.removeItem(`${newUserId}_goldsAvailable`);
+                localStorage.removeItem(`${newUserId}_goldsTotal`);
+                localStorage.removeItem(`${newUserId}_ticketsAvailable`);
+                localStorage.removeItem(`${newUserId}_ticketsEarned`);
+                localStorage.removeItem(`${newUserId}_dashboardVersion`);
+                localStorage.removeItem(`${newUserId}_publishedServices`);
+                localStorage.removeItem(`${newUserId}_servicesPublishedCount`);
+                localStorage.removeItem(`${newUserId}_tasksAcceptedCount`);
+                localStorage.removeItem(`${newUserId}_tasksAccepted`);
+                localStorage.removeItem(`${newUserId}_goldsEarned`);
+                if (currentUserId === newUserId) {
+                  showModal('welcomeModal', 'Seu pedido de cadastro expirou após 48 horas.');
+                  logout();
+                }
+              }
+            }
+          }
+        }, 5000);
+
+        // Auto-login after registration
+        currentUserId = newUserId;
+        localStorage.setItem('currentUserId', currentUserId);
+        initializeAfterLogin();
+      } catch (e) {
+        console.error('Error in register:', e);
+        showModal('welcomeModal', 'Erro ao registrar. Tente novamente.');
+      }
+    }
+
+    function initializeAfterLogin() {
+      try {
+        loadUserData();
+        document.getElementById('loginSection').style.display = 'none';
+        document.getElementById('registerSection').style.display = 'none';
+        document.getElementById('header').style.display = 'flex';
+        document.getElementById('wallet-card').style.display = 'block';
+        document.getElementById('status-bar').style.display = 'flex';
+        document.getElementById('dashboard-section').style.display = 'block';
+        document.getElementById('footer').style.display = 'block';
+        updateProfileDisplay();
+        loadMembers();
+        updateBalanceDisplay();
+        console.log('Dashboard initialized after login');
+      } catch (e) {
+        console.error('Error in initializeAfterLogin:', e);
+        showModal('welcomeModal', 'Erro ao carregar o painel. Tente novamente.');
+      }
+    }
+
+    function loadUserData() {
+      try {
+        currentUserId = localStorage.getItem('currentUserId');
+        const profile = JSON.parse(localStorage.getItem('userProfile') || localStorage.getItem('pendingUserProfile'));
+        if (profile && currentUserId) {
+          goldsAvailable = parseInt(localStorage.getItem(`${currentUserId}_goldsAvailable`)) || 0;
+          goldsTotal = parseInt(localStorage.getItem(`${currentUserId}_goldsTotal`)) || 900;
+          ticketsAvailable = parseInt(localStorage.getItem(`${currentUserId}_ticketsAvailable`)) || 0;
+          showBalances = localStorage.getItem('showBalances') !== 'false';
+          console.log('User data loaded:', profile);
+        } else {
+          showLogin();
+        }
+      } catch (e) {
+        console.error('Error in loadUserData:', e);
+        showModal('welcomeModal', 'Erro ao carregar dados do usuário.');
+      }
+    }
+
+    function updateProfileDisplay() {
+      try {
+        const profile = JSON.parse(localStorage.getItem('userProfile') || localStorage.getItem('pendingUserProfile'));
+        if (profile) {
+          document.getElementById('profileName').textContent = `Bem-vindo, ${profile.name.split(' ')[0]}!`;
+          document.getElementById('userIdDisplay').textContent = profile.id;
+          document.getElementById('registrationDate').textContent = profile.registrationDate;
+          document.getElementById('userLevel').textContent = profile.level;
+          document.getElementById('servicesPublishedCount').textContent = parseInt(localStorage.getItem(`${currentUserId}_servicesPublishedCount`)) || 0;
+          document.getElementById('tasksAcceptedCount').textContent = parseInt(localStorage.getItem(`${currentUserId}_tasksAcceptedCount`)) || 0;
+          document.getElementById('goldsEarned').textContent = parseInt(localStorage.getItem(`${currentUserId}_goldsEarned`)) || 0;
+          document.getElementById('ticketsEarned').textContent = parseInt(localStorage.getItem(`${currentUserId}_ticketsEarned`)) || 0;
+
+          const publishedServices = JSON.parse(localStorage.getItem(`${currentUserId}_publishedServices`)) || [];
+          const servicesContainer = document.getElementById('servicesListContainer');
+          servicesContainer.innerHTML = '';
+          publishedServices.slice(-7).reverse().forEach(service => {
+            const serviceItem = document.createElement('div');
+            serviceItem.classList.add('service-item');
+            serviceItem.innerHTML = `
+              <strong>${service.name || 'Serviço'}</strong> - ${service.type || 'Tipo'} (${service.subcategory || 'Subcategoria'})<br>
+              <small>Data: ${service.date || 'N/A'} | Golds: ${service.golds || 0}</small>
+            `;
+            servicesContainer.appendChild(serviceItem);
+          });
+          if (publishedServices.length === 0) {
+            servicesContainer.innerHTML = '<p style="color: var(--text-secondary); font-size: 0.75rem;">Nenhum serviço publicado ainda.</p>';
+          }
+
+          const tasksAccepted = JSON.parse(localStorage.getItem(`${currentUserId}_tasksAccepted`)) || [];
+          const tasksContainer = document.getElementById('tasksListContainer');
+          tasksContainer.innerHTML = '';
+          tasksAccepted.slice(-7).reverse().forEach(task => {
+            const taskItem = document.createElement('div');
+            taskItem.classList.add('task-item');
+            taskItem.innerHTML = `
+              <strong>${task.name || 'Tarefa'}</strong> - ${task.type || 'Tipo'} (${task.subcategory || 'Subcategoria'})<br>
+              <small>Data: ${task.date || 'N/A'} | Golds: ${task.golds || 0}</small>
+            `;
+            tasksContainer.appendChild(taskItem);
+          });
+          if (tasksAccepted.length === 0) {
+            tasksContainer.innerHTML = '<p style="color: var(--text-secondary); font-size: 0.75rem;">Nenhuma tarefa realizada ainda.</p>';
+          }
+          console.log('Profile display updated');
+        }
+      } catch (e) {
+        console.error('Error in updateProfileDisplay:', e);
+        showModal('welcomeModal', 'Erro ao atualizar exibição do perfil.');
+      }
+    }
+
+    function shouldShowCookieBanner() {
+      try {
+        const cookieConsent = localStorage.getItem('dashboardCookieConsent');
+        if (cookieConsent === 'true' || cookieConsent === 'false') {
+          return false;
+        }
+
+        const today = new Date().toISOString().split('T')[0];
+        const cookieData = JSON.parse(localStorage.getItem('cookieDisplayData')) || { date: '', count: 0, times: [] };
+
+        if (cookieData.date !== today) {
+          cookieData.date = today;
+          cookieData.count = 0;
+          cookieData.times = generateRandomTimes();
+          localStorage.setItem('cookieDisplayData', JSON.stringify(cookieData));
+        }
+
+        if (cookieData.count >= 5) {
+          return false;
+        }
+
+        const now = new Date();
+        const currentHour = now.getHours();
+        const currentMinute = now.getMinutes();
+        const currentTime = currentHour * 60 + currentMinute;
+
+        const isWithinTimeWindow = cookieData.times.some(time => {
+          const [hour, minute] = time.split(':').map(Number);
+          const timeInMinutes = hour * 60 + minute;
+          return Math.abs(currentTime - timeInMinutes) <= 30;
+        });
+
+        if (isWithinTimeWindow) {
+          cookieData.count += 1;
+          localStorage.setItem('cookieDisplayData', JSON.stringify(cookieData));
+          return true;
+        }
+
+        return false;
+      } catch (e) {
+        console.error('Error in shouldShowCookieBanner:', e);
+        return false;
+      }
+    }
+
+    function generateRandomTimes() {
+      const times = [];
+      const hours = [8, 12, 15, 18, 21];
+      for (let i = 0; i < 5; i++) {
+        const hour = hours[i];
+        const minute = Math.floor(Math.random() * 60);
+        times.push(`${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`);
+      }
+      return times.sort();
+    }
+
+    function acceptCookies() {
+      try {
+        localStorage.setItem('dashboardCookieConsent', 'true');
+        document.getElementById('cookieBanner').style.display = 'none';
+        console.log('Cookies accepted');
+      } catch (e) {
+        console.error('Error in acceptCookies:', e);
+        showModal('welcomeModal', 'Erro ao aceitar cookies.');
+      }
+    }
+
+    function declineCookies() {
+      try {
+        localStorage.setItem('dashboardCookieConsent', 'false');
+        document.getElementById('cookieBanner').style.display = 'none';
+        showModal('welcomeModal', 'Cookies recusados. Funcionalidades podem ser limitadas.');
+        console.log('Cookies declined');
+      } catch (e) {
+        console.error('Error in declineCookies:', e);
+        showModal('welcomeModal', 'Erro ao recusar cookies.');
+      }
+    }
+
+    function checkUserProfile() {
+      try {
+        const rememberedUserId = localStorage.getItem('rememberedUserId') || localStorage.getItem('currentUserId');
+        if (rememberedUserId) {
+          const members = JSON.parse(localStorage.getItem('serverMembersData')) || [];
+          const member = members.find(m => m.id === rememberedUserId);
+          if (member) {
+            currentUserId = member.id;
+            localStorage.setItem('currentUserId', currentUserId);
+            localStorage.setItem('userProfile', JSON.stringify({
+              id: member.id,
+              name: member.name,
+              email: member.email,
+              registrationDate: member.registrationDate,
+              level: member.level
+            }));
+            initializeAfterLogin();
+            console.log('Auto-login with remembered user:', currentUserId);
+          } else {
+            const pendingProfile = JSON.parse(localStorage.getItem('pendingUserProfile'));
+            if (pendingProfile && pendingProfile.id === rememberedUserId) {
+              const now = new Date();
+              if (new Date(pendingProfile.expirationDate) > now) {
+                currentUserId = pendingProfile.id;
+                localStorage.setItem('currentUserId', currentUserId);
+                localStorage.setItem('userProfile', JSON.stringify(pendingProfile));
+                initializeAfterLogin();
+                console.log('Auto-login with pending profile:', currentUserId);
+              } else {
+                showLogin();
+                console.log('Pending profile expired');
+              }
+            } else {
+              showLogin();
+              console.log('No valid remembered user found');
+            }
+          }
+        } else {
+          showLogin();
+          console.log('No remembered user, showing login');
+        }
+      } catch (e) {
+        console.error('Error in checkUserProfile:', e);
+        showModal('welcomeModal', 'Erro ao verificar perfil do usuário.');
+      }
+    }
+
+    function updateInterface() {
+      try {
+        updateBalanceDisplay();
+        if (currentUserId) {
+          localStorage.setItem(`${currentUserId}_goldsAvailable`, goldsAvailable);
+          localStorage.setItem(`${currentUserId}_goldsTotal`, goldsTotal);
+          localStorage.setItem(`${currentUserId}_ticketsAvailable`, ticketsAvailable);
+        }
+        console.log('Interface updated with golds and tickets:', { available: goldsAvailable, total: goldsTotal, tickets: ticketsAvailable });
+      } catch (e) {
+        console.error('Error in updateInterface:', e);
+        showModal('welcomeModal', 'Erro ao atualizar interface.');
+      }
+    }
+
+    function loadMembers() {
+      try {
+        const membersGrid = document.getElementById('membersGrid');
+        membersGrid.innerHTML = '';
+        const members = JSON.parse(localStorage.getItem('serverMembersData')) || [];
+        // Sort members by golds (descending) to highlight top members
+        const sortedMembers = members.sort((a, b) => (b.golds || 0) - (a.golds || 0));
+        // Display up to 20 members
+        sortedMembers.slice(0, 4).forEach(member => {
+          if (member.id && member.name) { // Ensure member has required fields
+            const card = document.createElement('div');
+            card.classList.add('member-card');
+            card.innerHTML = `
+              <h4>${member.name || 'Sem Nome'}</h4>
+              <p><strong>ID:</strong> ${member.id}</p>
+              <p><strong>Nível:</strong> ${member.level || 'Iniciante'}</p>
+              <p><strong>Golds:</strong> ${member.golds || 0}</p>
+            `;
+            card.addEventListener('click', () => {
+              console.log('Member card clicked, navigating to:', `MemberProfile.html?memberId=${encodeURIComponent(member.id)}`);
+              navigateTo(`MemberProfile.html?memberId=${encodeURIComponent(member.id)}`);
+            });
+            membersGrid.appendChild(card);
+          }
+        });
+        if (sortedMembers.length === 0) {
+          membersGrid.innerHTML = '<p style="color: var(--text-secondary); font-size: 0.875rem;">Nenhum membro destacado disponível.</p>';
+        }
+        console.log('Members loaded:', Math.min(members.length, 20));
+      } catch (e) {
+        console.error('Error in loadMembers:', e);
+        showModal('welcomeModal', 'Erro ao carregar membros.');
+      }
+    }
+
+    // Listen for changes in localStorage to update members dynamically
+    window.addEventListener('storage', (event) => {
+      if (event.key === 'serverMembersData') {
+        console.log('serverMembersData updated, reloading members');
+        loadMembers();
+      }
+    });
+
+    function navigateTo(url) {
+      try {
+        // Verifica currentUserId no localStorage se não estiver na sessão
+        if (!currentUserId) {
+          currentUserId = localStorage.getItem('currentUserId');
+        }
+        if (!currentUserId) {
+          showModal('welcomeModal', 'Faça login primeiro!');
+          console.log('Navigation blocked: No user ID');
+          return;
+        }
+        const separator = url.includes('?') ? '&' : '?';
+        const navigationUrl = `${url}${separator}userId=${encodeURIComponent(currentUserId)}`;
+        console.log('Navigating to:', navigationUrl);
+        window.location.href = navigationUrl;
+      } catch (e) {
+        console.error('Error in navigateTo:', e);
+        showModal('welcomeModal', 'Erro ao navegar.');
+      }
+    }
+
+    function showModal(modalId, message) {
+      try {
+        const modal = document.getElementById(modalId);
+        if (modalId === 'welcomeModal') {
+          modal.querySelector('p').textContent = message;
+        }
+        modal.style.display = 'flex';
+        setTimeout(() => {
+          modal.style.display = 'none';
+        }, 3000);
+        console.log('Modal shown:', modalId, message);
+      } catch (e) {
+        console.error('Error in showModal:', e);
+      }
+    }
+
+    function closeModal(modalId) {
+      try {
+        document.getElementById(modalId).style.display = 'none';
+        console.log('Modal closed:', modalId);
+      } catch (e) {
+        console.error('Error in closeModal:', e);
+      }
+    }
+
+    window.onload = () => {
+      try {
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        document.body.dataset.theme = savedTheme;
+
+        if (shouldShowCookieBanner()) {
+          document.getElementById('cookieBanner').style.display = 'flex';
+          console.log('Cookie banner displayed');
+        } else {
+          checkUserProfile();
+        }
+        updateInterface();
+        updateHeaderOpacity();
+      } catch (e) {
+        console.error('Error in window.onload:', e);
+        showModal('welcomeModal', 'Erro ao carregar a página.');
+      }
+    };
+  </script>
+  ...
+  <!-- Outros scripts e fechamentos -->
+
+  <script>
+    window.addEventListener('DOMContentLoaded', () => {
+      const profile = JSON.parse(localStorage.getItem('userProfile'));
+      const golds = localStorage.getItem(`${profile?.id}_goldsTotal`) || 0;
+      const reais = localStorage.getItem(`${profile?.id}_reaisBalance`) || 0;
+
+      if (profile) {
+        document.getElementById('user-info').textContent = `${profile.name} (ID: ${profile.id})`;
+      }
+      document.getElementById('golds-balance').textContent = parseInt(golds).toLocaleString();
+      document.getElementById('reais-balance').textContent = 'R$ ' + parseFloat(reais).toFixed(2).replace('.', ',');
+    });
+  </script>
+
+</body>
+</html>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
